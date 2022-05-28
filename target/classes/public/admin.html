@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <title>Title</title>
+
+    <button onclick="generate()">Generuj autka</button>
+
+    <div class="dupxo">
+        <a href="index.html">dom</a>
+        <a href="cars.html">lista</a>
+        <a href="admin.html">admin</a>
+        <a href="search.html">search</a>
+    </div>
+
+
+    <table id="table">
+        <tr id="reference-row">
+
+            <td>$index</td>
+            <td>$id</td>
+            <td>$name</td>
+            <td>$poduszki</td>
+            <td>$year</td>
+            <td>$price</td>
+            <td>$vat</td>
+
+            <td class="color"></td>
+            <td>
+                <button class="generate-button">Generuj fakture</button>
+            </td>
+            <td>
+                <button class="download-button">Pobierz fakturke</button>
+            </td>
+        </tr>
+    </table>
+
+
+    <script>
+        let referenceRow = document.getElementById("reference-row");
+        let i = 0;
+
+        async function generate() {
+            const response = await (await fetch("generate")).json();
+            window.alert(JSON.stringify(response));
+
+            window.location.reload();
+        }
+
+        async function generateInvoice(car) {
+            const response = await fetch("pdfSingle", {
+                method : "POST",
+                body : JSON.stringify(car)
+            });
+            window.alert("ok");
+        }
+
+        async function downloadInvoice(dataRow) {
+            console.log(dataRow.invoice);
+            window.location = dataRow.invoice.pdfPath;
+        }
+
+        async function createTable() {
+            const cars = await (await fetch("json", {method: "POST"})).json();
+            console.log(cars);
+
+            for (let row of cars) {
+                carToDom(row);
+            }
+
+            referenceRow.remove();
+        }
+
+        async function carToDom(dataRow) {
+            const row = referenceRow.cloneNode(true);
+            console.log(dataRow.invoice);
+            const airBagText = `kierowca:${dataRow.airbags[0].value} <br>
+                                pasazer: ${dataRow.airbags[1].value} <br>
+                                tylnie:  ${dataRow.airbags[2].value} <br>
+                                boczne:  ${dataRow.airbags[3].value} <br>`
+
+            row.innerHTML = row.innerHTML.replace("$index", i);
+            row.innerHTML = row.innerHTML.replace("$name", dataRow.model);
+            row.innerHTML = row.innerHTML.replace("$id", dataRow.uuid);
+            row.innerHTML = row.innerHTML.replace("$poduszki", airBagText);
+            row.innerHTML = row.innerHTML.replace("$vat", dataRow.vat);
+            row.innerHTML = row.innerHTML.replace("$price", dataRow.price);
+            row.innerHTML = row.innerHTML.replace("$year", dataRow.year);
+            row.getElementsByClassName("color")[0].style = `background-color: ${dataRow.color}`
+
+            row.getElementsByClassName("generate-button")[0].onclick = () => generateInvoice(dataRow);
+            const downloadButton = row.getElementsByClassName("download-button")[0];
+
+            if(!dataRow.invoice) {
+                downloadButton.remove();
+            }
+            else {
+                downloadButton.onclick = () => downloadInvoice(dataRow);
+            }
+
+
+            table.appendChild(row);
+
+            i += 1;
+        }
+
+        async function main() {
+            createTable();
+        }
+
+        main();
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

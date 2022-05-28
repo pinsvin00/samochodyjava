@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Samochody</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script-cars.js" defer></script>
+</head>
+<body>
+
+<div class="dupxo">
+    <a href="index.html">dom</a>
+    <a href="cars.html">lista</a>
+    <a href="admin.html">admin</a>
+    <a href="search.html">search</a>
+</div>
+
+    <div class="container">
+        <table id="table">
+            <tr id="reference-row">
+                <td>$index</td>
+                <td>$id</td>
+                <td>$name</td>
+                <td>$poduszki</td>
+                <td>$year</td>
+                <td>$price</td>
+                <td>$vat</td>
+                <td class="color"></td>
+                <td>
+                    <button class="update-button">Aktualizuj</button>
+                </td>
+                <td>
+                    <button class="delete-button">Usuń</button>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="overlay">
+        <div class="modal">
+            model: <input type="text" name="model" id="model-input">
+            year: <select name="year" id="year-select"></select>
+            <div class="modal-buttons">
+                <button id="modal-confirm">Confirm</button>
+                <button id="modal-cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="dupxo">
+    <a href="index.html">dom</a>
+    <a href="cars.html">lista</a>
+    <a href="admin.html">admin</a>
+    <a href="search.html">search</a>
+</div>
+
+<div></div>
+    <button onclick="generateNew()">Generuj nowe auta</button><br>
+
+    <div>
+        <button onclick="generateAll()">Generuj wszystkie</button>
+        <div id="wszystkie"></div>
+    </div>
+
+
+    <div>
+        <span>Faktura autka z rocznika</span>
+        <select name="" id="select">
+
+        </select>
+
+        <button onclick="generateByYear(select.value)">Generuj</button>
+        <div id="rocznikowe"></div>
+    </div>
+
+    <div>
+        Faktura auta z przedzialu cenowego
+        <input type="text" id="min">
+        <input type="text" id="max">
+        <button onclick="generateByPrice(min.value, max.value)">generuj</button>
+        <div id="cenowe">
+
+        </div>
+    </div>
+
+
+    <table id="table">
+        <tr id="reference-row">
+
+            <td>$index</td>
+            <td>$id</td>
+            <td>$name</td>
+            <td>$poduszki</td>
+            <td>$year</td>
+            <td>$price</td>
+            <td>$vat</td>
+
+            <td>
+                $saleTime
+            </td>
+            <td >
+                <img src="https://www.amogus.org/amogus.png" class="obrazek" alt="" style="width: 400px; height: 250px">
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+<script>
+    let cars = [];
+    let invoices = new Map();
+    let referenceRow = document.getElementById("reference-row");
+    let i = 1;
+
+    function getSrc(dataRow) {
+        const model = dataRow.model;
+        const sus =  model.replaceAll(" ", "_");
+        return `imgs/${sus}.png`;
+    }
+
+
+    async function carToDom(dataRow) {
+        const row = referenceRow.cloneNode(true);
+        const airBagText = `kierowca:${dataRow.airbags[0].value} <br>
+                                pasazer: ${dataRow.airbags[1].value} <br>
+                                tylnie:  ${dataRow.airbags[2].value} <br>
+                                boczne:  ${dataRow.airbags[3].value} <br>`
+
+        row.innerHTML = row.innerHTML.replace("$index", i);
+        row.innerHTML = row.innerHTML.replace("$name", dataRow.model);
+        row.innerHTML = row.innerHTML.replace("$id", dataRow.uuid);
+        row.innerHTML = row.innerHTML.replace("$poduszki", airBagText);
+        row.innerHTML = row.innerHTML.replace("$vat", dataRow.vat);
+        row.innerHTML = row.innerHTML.replace("saleTime", dataRow.saleTime);
+        row.innerHTML = row.innerHTML.replace("$price", dataRow.price);
+        row.innerHTML = row.innerHTML.replace("$year", dataRow.year);
+        row.getElementsByClassName("obrazek")[0].src = getSrc(dataRow);
+
+        table.appendChild(row);
+
+        i += 1;
+    }
+
+    async function generateNew() {
+        const response = await (await fetch("generate")).json();
+        window.alert(JSON.stringify(response));
+
+        window.location.reload();
+    }
+
+    function getDownloadButtonForInvoice(invoice) {
+        const elem = document.createElement("a");
+        elem.href = invoice.path;
+        elem.setAttribute("style", "margin-left: 3rem");
+        elem.innerText = "pobierz";
+
+        return elem;
+    }
+
+    async function getInvoices() {
+        const data = await (await fetch("getInvoices")).json();
+        const all = document.getElementById("wszystkie");
+        const price = document.getElementById("cenowe");
+        const year = document.getElementById("rocznikowe");
+
+        console.log(data);
+        data.forEach(el => {
+            if(el.group === 1) {
+                all.appendChild(getDownloadButtonForInvoice(el));
+            }
+            if(el.group === 2) {
+                price.appendChild(getDownloadButtonForInvoice(el));
+            }
+            if(el.group === 3) {
+                year.appendChild(getDownloadButtonForInvoice(el));
+            }
+        })
+    }
+
+
+    async function generate(cars,url) {
+        console.log(url);
+        const response = await fetch(url, {
+            method : "POST",
+            body: JSON.stringify(cars),
+        })
+
+        window.alert(response);
+
+        window.location.reload();
+    }
+
+    async function generateAll() {
+        return generate(cars, "pdfManyAll");
+
+    }
+
+    async function generateByYear(year) {
+        console.log(year)
+        const carros = cars.filter(el => el.year == year);
+        return await generate(carros, "pdfManyYear");
+    }
+
+    async function generateByPrice(minStr, maxStr) {
+        let min = parseInt(minStr);
+        let max = parseInt(maxStr);
+
+        min = isNaN(min) ? 0 : min;
+        max = isNaN(max) ? 99999 : max;
+
+        const carros = cars.filter(el => el.price >= min && el.price <= max);
+        return await generate(carros, "pdfManyPrice");
+    }
+
+
+
+
+    async function getCars() {
+        const response = await fetch("json", {
+              method: "post"
+        });
+        const data = await response.json();
+        console.log(data);
+        data.forEach(el => {
+            carToDom(el);
+        })
+
+        referenceRow.remove();
+        return data;
+    }
+
+
+
+    async function main() {
+        cars = await getCars();
+
+        let yearSelect = document.getElementById("select");
+        for(let i = 1998; i <= 2020; i++){
+            let option = document.createElement("option");
+            option.text = i.toString();
+            option.value = i.toString();
+            yearSelect.appendChild(option);
+        }
+
+        await getInvoices();
+
+    }
+
+    main();
+</script>
+
+</html>
