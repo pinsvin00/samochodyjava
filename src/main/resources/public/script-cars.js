@@ -27,15 +27,15 @@ async function main(){
         for(const dataRow of data) {
             const row = referenceRow.cloneNode(true);
 
-            const airBagText = `kierowca:${dataRow.airbags[0].value} <br>
-                                pasazer: ${dataRow.airbags[1].value} <br>
-                                tylnie:  ${dataRow.airbags[2].value} <br>
-                                boczne:  ${dataRow.airbags[3].value} <br>`
+            const airBagText = `driver   :${dataRow.airbags[0].value} <br>
+                                passenger: ${dataRow.airbags[1].value} <br>
+                                rear     :  ${dataRow.airbags[2].value} <br>
+                                side     :  ${dataRow.airbags[3].value} <br>`
 
             row.innerHTML = row.innerHTML.replace("$index", i);
             row.innerHTML = row.innerHTML.replace("$name", dataRow.model);
             row.innerHTML = row.innerHTML.replace("$id", dataRow.uuid);
-            row.innerHTML = row.innerHTML.replace("$poduszki", airBagText);
+            row.innerHTML = row.innerHTML.replace("$airbags", airBagText);
             row.innerHTML = row.innerHTML.replace("$year", dataRow.year);
             row.innerHTML = row.innerHTML.replace("$price", dataRow.price);
             row.innerHTML = row.innerHTML.replace("$vat", dataRow.vat);
@@ -87,7 +87,7 @@ async function showUpdateModal(car){
             body: JSON.stringify(car)
         })).json();
 
-        alert(JSON.stringify(data));
+        alert("Successfully updated");
 
         window.location.reload();
 

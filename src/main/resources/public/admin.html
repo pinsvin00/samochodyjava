@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="./style.css">
     <title>Title</title>
 
-    <button onclick="generate()">Generuj autka</button>
+    <button onclick="generate()">Generate placeholders</button>
 
-    <div class="dupxo">
-        <a href="index.html">dom</a>
-        <a href="cars.html">lista</a>
-        <a href="admin.html">admin</a>
-        <a href="search.html">search</a>
+    <div class="navbar">
+        <a href="index.html">Home</a>
+        <a href="cars.html">List</a>
+        <a href="admin.html">Admin</a>
+        <a href="search.html">Search</a>
     </div>
 
 
@@ -21,17 +21,17 @@
             <td>$index</td>
             <td>$id</td>
             <td>$name</td>
-            <td>$poduszki</td>
+            <td>$airbags</td>
             <td>$year</td>
             <td>$price</td>
             <td>$vat</td>
 
             <td class="color"></td>
             <td>
-                <button class="generate-button">Generuj fakture</button>
+                <button class="generate-button">Generate invoice</button>
             </td>
             <td>
-                <button class="download-button">Pobierz fakturke</button>
+                <button class="download-button">Download invoice</button>
             </td>
         </tr>
     </table>
@@ -43,7 +43,7 @@
 
         async function generate() {
             const response = await (await fetch("generate")).json();
-            window.alert(JSON.stringify(response));
+            window.alert("Successfully generated");
 
             window.location.reload();
         }
@@ -53,7 +53,6 @@
                 method : "POST",
                 body : JSON.stringify(car)
             });
-            window.alert("ok");
             window.location.reload();
         }
 
@@ -64,7 +63,6 @@
 
         async function createTable() {
             const cars = await (await fetch("json", {method: "POST"})).json();
-            console.log(cars);
 
             for (let row of cars) {
                 carToDom(row);
@@ -76,15 +74,15 @@
         async function carToDom(dataRow) {
             const row = referenceRow.cloneNode(true);
             console.log(dataRow.invoice);
-            const airBagText = `kierowca:${dataRow.airbags[0].value} <br>
-                                pasazer: ${dataRow.airbags[1].value} <br>
-                                tylnie:  ${dataRow.airbags[2].value} <br>
-                                boczne:  ${dataRow.airbags[3].value} <br>`
+            const airBagText = `Driver :${dataRow.airbags[0].value} <br>
+                                Passanger: ${dataRow.airbags[1].value} <br>
+                                Rear:  ${dataRow.airbags[2].value} <br>
+                                Side:  ${dataRow.airbags[3].value} <br>`
 
             row.innerHTML = row.innerHTML.replace("$index", i);
             row.innerHTML = row.innerHTML.replace("$name", dataRow.model);
             row.innerHTML = row.innerHTML.replace("$id", dataRow.uuid);
-            row.innerHTML = row.innerHTML.replace("$poduszki", airBagText);
+            row.innerHTML = row.innerHTML.replace("$airbags", airBagText);
             row.innerHTML = row.innerHTML.replace("$vat", dataRow.vat);
             row.innerHTML = row.innerHTML.replace("$price", dataRow.price);
             row.innerHTML = row.innerHTML.replace("$year", dataRow.year);

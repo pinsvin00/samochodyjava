@@ -7,15 +7,15 @@
 </head>
 <body>
 
-<div class="dupxo">
-    <a href="index.html">dom</a>
-    <a href="cars.html">lista</a>
-    <a href="admin.html">admin</a>
-    <a href="search.html">search</a>
+<div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="cars.html">List</a>
+    <a href="admin.html">Admin</a>
+    <a href="search.html">Search</a>
 </div>
 
 <div></div>
-    <button onclick="generateNew()">Generuj nowe auta</button><br>
+    <button onclick="generateNew()">Add more data</button><br>
 
     <div>
         <button onclick="generateAll()">Generuj wszystkie</button>
@@ -24,20 +24,20 @@
 
 
     <div>
-        <span>Faktura autka z rocznika</span>
+        <span>Invoice for given year</span>
         <select name="" id="select">
 
         </select>
 
-        <button onclick="generateByYear(select.value)">Generuj</button>
+        <button onclick="generateByYear(select.value)">Generate</button>
         <div id="rocznikowe"></div>
     </div>
 
     <div>
-        Faktura auta z przedzialu cenowego
+        Invoice for price range
         <input type="text" id="min">
         <input type="text" id="max">
-        <button onclick="generateByPrice(min.value, max.value)">generuj</button>
+        <button onclick="generateByPrice(min.value, max.value)">Generate</button>
         <div id="cenowe">
 
         </div>
@@ -50,7 +50,7 @@
             <td>$index</td>
             <td>$id</td>
             <td>$name</td>
-            <td>$poduszki</td>
+            <td>$airbags</td>
             <td>$year</td>
             <td>$price</td>
             <td>$vat</td>
@@ -59,7 +59,7 @@
                 $saleTime
             </td>
             <td >
-                <img src="https://www.amogus.org/amogus.png" class="obrazek" alt="" style="width: 400px; height: 250px">
+                <img src="https://placehold.co/400" class="obrazek" alt="" style="width: 400px; height: 250px">
             </td>
         </tr>
     </table>
@@ -74,22 +74,22 @@
 
     function getSrc(dataRow) {
         const model = dataRow.model;
-        const sus =  model.replaceAll(" ", "_");
-        return `imgs/${sus}.png`;
+        const img =  model.replaceAll(" ", "_");
+        return `imgs/${img}.png`;
     }
 
 
     async function carToDom(dataRow) {
         const row = referenceRow.cloneNode(true);
-        const airBagText = `kierowca:${dataRow.airbags[0].value} <br>
-                                pasazer: ${dataRow.airbags[1].value} <br>
-                                tylnie:  ${dataRow.airbags[2].value} <br>
-                                boczne:  ${dataRow.airbags[3].value} <br>`
+        const airBagText = `driver:${dataRow.airbags[0].value} <br>
+                                passenger: ${dataRow.airbags[1].value} <br>
+                                rear:  ${dataRow.airbags[2].value} <br>
+                                side:  ${dataRow.airbags[3].value} <br>`
 
         row.innerHTML = row.innerHTML.replace("$index", i);
         row.innerHTML = row.innerHTML.replace("$name", dataRow.model);
         row.innerHTML = row.innerHTML.replace("$id", dataRow.uuid);
-        row.innerHTML = row.innerHTML.replace("$poduszki", airBagText);
+        row.innerHTML = row.innerHTML.replace("$airbags", airBagText);
         row.innerHTML = row.innerHTML.replace("$vat", dataRow.vat);
         row.innerHTML = row.innerHTML.replace("saleTime", dataRow.saleTime);
         row.innerHTML = row.innerHTML.replace("$price", dataRow.price);
@@ -103,7 +103,7 @@
 
     async function generateNew() {
         const response = await (await fetch("generate")).json();
-        window.alert(JSON.stringify(response));
+        //window.alert(JSON.stringify(response));
 
         window.location.reload();
     }
@@ -112,7 +112,7 @@
         const elem = document.createElement("a");
         elem.href = invoice.path;
         elem.setAttribute("style", "margin-left: 3rem");
-        elem.innerText = "pobierz";
+        elem.innerText = "Download";
 
         return elem;
     }
@@ -145,8 +145,6 @@
             body: JSON.stringify(cars),
         })
 
-        window.alert(response);
-
         window.location.reload();
     }
 
@@ -168,8 +166,8 @@
         min = isNaN(min) ? 0 : min;
         max = isNaN(max) ? 99999 : max;
 
-        const carros = cars.filter(el => el.price >= min && el.price <= max);
-        return await generate(carros, "pdfManyPrice");
+        const cars = cars.filter(el => el.price >= min && el.price <= max);
+        return await generate(cars, "pdfManyPrice");
     }
 
 

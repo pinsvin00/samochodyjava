@@ -29,18 +29,18 @@ public class Service {
 
         document.open();
 
-        document.add(new Paragraph("Faktura dla firmy samochodowej", font));
-        document.add(new Paragraph("Sprzedawca : komis samochodowy", font));
-        document.add(new Paragraph("Nabywca : klient komisu", font));
+        document.add(new Paragraph("Invoice for company", font));
+        document.add(new Paragraph("Seller : Car dealership", font));
+        document.add(new Paragraph("Buyer : Client of dealership", font));
         document.add(new Paragraph("--", font));
         document.add(new Paragraph("--", font));
 
 
 
-        table.addCell(new PdfPCell(new Phrase("lp.", font) ));
-        table.addCell(new PdfPCell(new Phrase("cena", font) ));
-        table.addCell(new PdfPCell(new Phrase("vat", font) ));
-        table.addCell(new PdfPCell(new Phrase("wartosc", font) ));
+        table.addCell(new PdfPCell(new Phrase("No.", font) ));
+        table.addCell(new PdfPCell(new Phrase("Price", font) ));
+        table.addCell(new PdfPCell(new Phrase("Vat", font) ));
+        table.addCell(new PdfPCell(new Phrase("Value", font) ));
 
         Integer sum = 0;
 
@@ -63,17 +63,17 @@ public class Service {
 
         document.add(table);
 
-        document.add(new Paragraph("Do zaplaty " + sum.toString(), font));
+        document.add(new Paragraph("To be paid " + sum.toString(), font));
 
         document.close();
     }
     public static CarDAO generateCar() {
-        Random rand = new Random(); //instance of random class
+        Random rand = new Random();
         CarDAO dao = new CarDAO();
 
         dao.year = String.valueOf(1998 + rand.nextInt(22));
         ArrayList<String> airbags = new ArrayList<String>(
-                Arrays.asList("kierwocy", "boczne", "pasazera", "dupy")
+                Arrays.asList("kierwocy", "boczne", "pasazera", "back")
         );
 
         String[] models = {

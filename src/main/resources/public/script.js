@@ -51,6 +51,6 @@ async function addCar(){
     })
 
     const data = await response.json()
-    window.alert(JSON.stringify(data));
+    //window.alert(JSON.stringify(data));
     // alert(JSON.stringify(data, null, 3))
 }

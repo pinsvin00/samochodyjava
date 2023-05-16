@@ -11,12 +11,12 @@ table, td {
     border: 1px solid gray;
 }
 
-.dupxo {
+.navbar {
     display: flex;
     flex-direction: row;
 }
 
-.dupxo > a {
+.navbar > a {
     margin-right: 2rem;
 }
 

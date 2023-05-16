@@ -12,6 +12,7 @@ import spark.Request;
 import spark.Response;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class App {
     public static void main(String[] args) {
         port(5000);
 
-        externalStaticFileLocation("E:\\programming\\samochudjava\\src\\main\\resources\\public");
+        externalStaticFileLocation(new File("").getAbsolutePath() + "/src/main/resources/public");
 
         post("/add", App::addCarPost);
         post("/json", App::getJsonPost);
@@ -159,27 +160,27 @@ public class App {
         Font fontBold = FontFactory.getFont(FontFactory.COURIER, 20, Font.BOLD);
         Font fontColor = FontFactory.getFont(FontFactory.COURIER, 16, new BaseColor(color.getRed(), color.getGreen(), color.getBlue() ) );
 
-        Paragraph chunk = new Paragraph(String.format("Faktura dla, %s", dao.uuid), fontBold);
+        Paragraph chunk = new Paragraph(String.format("Invoice for, %s", dao.uuid), fontBold);
         document.add(chunk);
         chunk = new Paragraph(String.format("Model, %s", dao.model), font);
         document.add(chunk);
-        chunk = new Paragraph(String.format("Rocznik, %s", dao.year), font);
+        chunk = new Paragraph(String.format("Year, %s", dao.year), font);
 
 
         document.add(chunk);
-        chunk = new Paragraph(String.format("kolor : %s", dao.color), fontColor);
+        chunk = new Paragraph(String.format("Color : %s", dao.color), fontColor);
 
         document.add(chunk);
-        chunk = new Paragraph(String.format("poduszka kierowca, %s", dao.airbags.get(0).value ), font);
+        chunk = new Paragraph(String.format("Drivers airbag, %s", dao.airbags.get(0).value ), font);
 
         document.add(chunk);
-        chunk = new Paragraph(String.format("poduszka pasazer, %s", dao.airbags.get(1).value), font);
+        chunk = new Paragraph(String.format("Passenger airbag, %s", dao.airbags.get(1).value), font);
 
         document.add(chunk);
-        chunk = new Paragraph(String.format("poduszka tylna, %s", dao.airbags.get(2).value), font);
+        chunk = new Paragraph(String.format("Rear airbags, %s", dao.airbags.get(2).value), font);
 
         document.add(chunk);
-        chunk = new Paragraph(String.format("poduszki boczne, %s", dao.airbags.get(3).value), font);
+        chunk = new Paragraph(String.format("Side airbags, %s", dao.airbags.get(3).value), font);
         document.add(chunk);
 
         Image img = Image.getInstance(String.format("src\\main\\resources\\public\\imgs\\%s.png", dao.getImageName()));
